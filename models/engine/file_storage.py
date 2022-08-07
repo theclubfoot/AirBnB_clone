@@ -1,34 +1,35 @@
 #!/usr/bin/python3
-""" FileStorage class module. """
-
+"""Module for FileStorage class."""
 import datetime
 import json
 import os
 
 
 class FileStorage:
-    """ Class object for serialization and deserialization of base classes """
-    __file_name = "file.json"
+
+    """Class for serializtion and deserialization of base classes."""
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        """ Method to return all objects '__objects' dictionary """
+        """Returns __objects dictionary."""
+        # TODO: should this be a copy()?
         return FileStorage.__objects
 
     def new(self, obj):
-        """ Create new objects 'obj' in __objects dictionary """
+        """Sets new obj in __objects dictionary."""
+        # TODO: should these be more precise specifiers?
         key = "{}.{}".format(type(obj).__name__, obj.id)
-        FileStorage.objects[key] = obj
+        FileStorage.__objects[key] = obj
 
     def save(self):
-        """ Serializes objects '__objects' to JSON file """
-        with open(FileStorage.__file_name, "w", encoding="utf-8") as file:
-            data = {key: value.to_dict() for key, value
-                    in FileStorage.__objects.items()}
-            json.dump(data, file)
+        """Serialzes __objects to JSON file."""
+        with open(FileStorage.__file_path, "w", encoding="utf-8") as f:
+            d = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
+            json.dump(d, f)
 
     def classes(self):
-        """ Return a dictionary of valid classes and their id references. """
+        """Returns a dictionary of valid classes and their references."""
         from models.base_model import BaseModel
         from models.user import User
         from models.state import State
@@ -47,17 +48,18 @@ class FileStorage:
         return classes
 
     def reload(self):
-        """ Deserializes JSON file into objects '__objects' dictionary """"
+        """Deserializes JSON file into __objects."""
         if not os.path.isfile(FileStorage.__file_path):
             return
-        with open(FileStorage.__file_name, "r", encoding="utf-8") as file:
-            obj_dict = json.load(file)
-            obj_dict = {key: self.classes()[value["__class__"]](**value)
-                        for key, value in obj_dict.items()}
+        with open(FileStorage.__file_path, "r", encoding="utf-8") as f:
+            obj_dict = json.load(f)
+            obj_dict = {k: self.classes()[v["__class__"]](**v)
+                        for k, v in obj_dict.items()}
+            # TODO: should this overwrite or insert?
             FileStorage.__objects = obj_dict
 
-    def attribues(self):
-        """ Returns all attributes and their valid types for classname. """
+    def attributes(self):
+        """Returns the valid attributes and their types for classname."""
         attributes = {
             "BaseModel":
                      {"id": str,
@@ -83,7 +85,7 @@ class FileStorage:
                       "number_rooms": int,
                       "number_bathrooms": int,
                       "max_guest": int,
-                      " price_by_night": int,
+                      "price_by_night": int,
                       "latitude": float,
                       "longitude": float,
                       "amenity_ids": list},
