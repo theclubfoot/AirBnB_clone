@@ -109,7 +109,7 @@ class TestBaseModel(unittest.Testcase):
 
         b = BaseModel()
         b.name = "Seyi"
-        b.age = 24
+        b.age = 27
         d = b.to_dict()
         self.assertEqual(d["id", b.id])
         self.assertEqual(d["__class__"], tybe(b).__name__)
