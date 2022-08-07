@@ -29,8 +29,8 @@ class TestUser(unittest.TestCase):
     def resetStorage(self):
         """Resets FileStorage data."""
         FileStorage._FileStorage__objects = {}
-        if os.path.isfile(FileStorage._FileStorage__file_name):
-            os.remove(FileStorage._FileStorage__file_name)
+        if os.path.isfile(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
 
     def test_8_instantiation(self):
         """Tests instantiation of User class."""
@@ -47,7 +47,6 @@ class TestUser(unittest.TestCase):
         for k, v in attributes.items():
             self.assertTrue(hasattr(o, k))
             self.assertEqual(type(getattr(o, k, None)), v)
-
 
 if __name__ == "__main__":
     unittest.main()
